@@ -1,0 +1,31 @@
+from ultralytics import YOLO
+import os
+import multiprocessing
+
+def train_model():
+    # Verificar que el archivo existe
+    config_path = "configS.yaml"
+    if os.path.exists(config_path):
+        print(f"✅ configS.yaml encontrado")
+    else:
+        print(f"❌ configS.yaml NO encontrado")
+        print("Archivos en el directorio:", os.listdir("."))
+        return
+
+    # Load a model
+    model = YOLO("yolo11n.yaml")
+
+    # Train the model with optimized settings for Windows
+    results = model.train(
+        data="configS.yaml", 
+        epochs=60, 
+        imgsz=640,
+        workers=0,  # Desactiva multiprocessing
+        #batch=16,   # Reduce el batch size si es necesario
+        device=0    # Usa GPU si está disponible
+    )
+
+if __name__ == '__main__':
+    # Esto es necesario para multiprocessing en Windows
+    multiprocessing.freeze_support()
+    train_model()
